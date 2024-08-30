@@ -1,0 +1,6 @@
+# Configuration for the plugin
+
+
+
+messages:
+  reload: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>Reloading the plugin..."
