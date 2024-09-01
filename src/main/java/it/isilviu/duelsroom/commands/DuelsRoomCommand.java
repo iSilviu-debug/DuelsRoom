@@ -24,11 +24,10 @@ public class DuelsRoomCommand {
     }
 
     @Subcommand("reload")
-    @CommandPermission("vshulker.admin")
+    @CommandPermission("duelsroom.admin")
     public void onReload(BukkitCommandActor actor) {
         actor.audience().sendMessage(Messages.getMessage("messages.reload"));
         config.reload();
     }
-
 
 }

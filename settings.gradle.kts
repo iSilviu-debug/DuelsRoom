@@ -1,2 +1,2 @@
-rootProject.name = "vShulkerBox"
+rootProject.name = "DuelsRoom"
 

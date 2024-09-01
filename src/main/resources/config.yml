@@ -1,6 +1,42 @@
 # Configuration for the plugin
 
+# Duration of the door.
+door:
+  place: 0.5 # In seconds - The time it takes to place the door.
+  break: 0 # In seconds - The time it takes to break the door.
 
+# Combat System.
+# The combat system is a system that allows players to duel each other without escaping.
+combat:
+  enabled: true # If true, the combat system will be enabled.
+  instant: false # If true, the combat will start instantly when a player enters the room.
+  duration: 10 # In seconds - The time it takes to finish the combat.
+  commands:
+    disable: true
+    whitelist:
+      - "duelsroom "
+      - "msg "
+      - "reply "
+      - "r "
+      - "tell "
+      - "w "
+      - "whisper "
 
+# Messages for the plugin.
 messages:
   reload: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>Reloading the plugin..."
+  duel:
+    start: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>Duel started with <gradient:yellow:gold><players><gradient:blue:yellow>!"
+    intrusion: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>Another player entered the duel, the duel has been cancelled."
+  status:
+    win: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow><yellow><bold>🏆</bold></yellow> <yellow>You won the duel!"
+    lose: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow><red><bold>☠</bold></red> <red>You lost the duel!</red>"
+  combat:
+    command: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>You are in combat mode, you can't use this command."
+    actionbar:
+      idle: "<gradient:blue:yellow>Fight!"
+      combat: "<gradient:blue:yellow>Combat ends in <gradient:yellow:gold><time><gradient:blue:yellow> seconds."
+    start: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>You have entered combat mode."
+    end: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>You have exited combat mode."
+
+  format_players: "<gradient:yellow:gold><player><gradient:blue:yellow>"

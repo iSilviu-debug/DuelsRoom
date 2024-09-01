@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "it.isilviu"
-version = "1.1-SNAPSHOT"
+version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -18,11 +18,12 @@ repositories {
         name = "silvioRepo"
         url = uri("https://repo.silvio.top/releases/")
     }
+    maven { url = uri("https://maven.enginehub.org/repo/") }
 }
 
 dependencies {
-    implementation("org.bstats:bstats-base:3.0.4")
-    implementation("org.bstats:bstats-bukkit:3.0.4")
+    implementation("org.bstats:bstats-base:3.0.6")
+    implementation("org.bstats:bstats-bukkit:3.0.6")
 
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
@@ -31,6 +32,12 @@ dependencies {
 
     // Add your specific platform module here
     implementation("com.github.Revxrsal.Lamp:bukkit:3.2.1")
+
+    // WorldGuard and Fawe. Require Java 21.
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.10")
+    implementation(platform("com.intellectualsites.bom:bom-newest:1.48")) // Ref: https://github.com/IntellectualSites/bom
+    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
+    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit") { isTransitive = false }
 }
 
 tasks.withType<JavaCompile> { // Preserve parameter names in the bytecode
@@ -50,7 +57,7 @@ tasks {
 
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 tasks.test {
