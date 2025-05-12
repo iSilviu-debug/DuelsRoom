@@ -12,11 +12,13 @@
 - Automatic room closure when a player leaves.
 - Detects and stops duels if a player glitches into blocks.
 - Win/loss announcements in chat.
+- Commands & Sound when Start or End a duel in config.yml
+- Support for DeluxeCombat & PlaceholderAPI (%duelsroom_<state>:<name>%)
 
 ## Requirements
 
 - **WorldGuard** and **WorldEdit** plugins must be installed.
-- Java 21
+- Java 17+
 - Minecraft server running Spigot or Paper.
 
 ## Installation
@@ -32,7 +34,7 @@ To build DuelsRoom from the source code, you'll need to use **Gradle**. Follow t
 
 ### Prerequisites
 
-- **Java Development Kit (JDK) 21+**
+- **Java Development Kit (JDK) 17+**
 - **Gradle** (or use the included `gradlew` wrapper)
 
 ### Steps to Build

@@ -9,11 +9,13 @@ import com.sk89q.worldedit.session.SessionManager;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -21,6 +23,7 @@ import it.isilviu.duelsroom.utils.worldguard.module.listeners.WorldguardPlayerLi
 import it.isilviu.duelsroom.utils.worldguard.module.model.Entry;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,6 +40,19 @@ public class WorldGuardModule { // Credits to https://github.com/Webbeh/WorldGua
         WorldGuard.getInstance().getPlatform().getSessionManager().registerHandler(Entry.factory, null);
 
         plugin.getServer().getPluginManager().registerEvents(new WorldguardPlayerListener(this), plugin);
+    }
+
+    /**
+     * Get region by name.
+     * @param world World to search in.
+     * @return One region of the given name.
+     */
+    @Nullable
+    public ProtectedRegion getRegion(World world, String name) {
+        RegionManager regionManager = container.get(BukkitAdapter.adapt(world));
+        if (regionManager == null) return null;
+
+        return regionManager.getRegion(name);
     }
 
     /**

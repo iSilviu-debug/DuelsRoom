@@ -23,6 +23,7 @@ public class CustomFlag {
         // Create enums
         flags.put(Flag.DUEL_ROOM, new StateFlag(Flag.DUEL_ROOM.getName(), false));
         flags.put(Flag.DUEL_ROOM_SIZE, new IntegerFlag(Flag.DUEL_ROOM_SIZE.getName()));
+        flags.put(Flag.DUEL_ROOM_THICKNESS, new IntegerFlag(Flag.DUEL_ROOM_THICKNESS.getName()));
         flags.put(Flag.DUEL_ROOM_BLOCK, new EnumFlag<>(Flag.DUEL_ROOM_BLOCK.getName(), Material.class));
 
         // Load enums and create them

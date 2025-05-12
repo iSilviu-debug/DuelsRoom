@@ -1,6 +1,7 @@
 package it.isilviu.duelsroom;
 
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
@@ -8,22 +9,26 @@ import com.sk89q.worldguard.protection.flags.EnumFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import it.isilviu.duelsroom.commands.DuelsRoomCommand;
+import it.isilviu.duelsroom.hooks.listeners.DeluxeCombatListener;
 import it.isilviu.duelsroom.listeners.CombatListener;
 import it.isilviu.duelsroom.listeners.DuelsRoomListener;
 import it.isilviu.duelsroom.listeners.PluginListener;
+import it.isilviu.duelsroom.hooks.PlaceholderAPI;
 import it.isilviu.duelsroom.utils.WorldEditUtils;
 import it.isilviu.duelsroom.utils.config.model.YamlFile;
+import it.isilviu.duelsroom.utils.map.DuelsMap;
 import it.isilviu.duelsroom.utils.worldguard.flags.CustomFlag;
 import it.isilviu.duelsroom.utils.worldguard.flags.enums.Flag;
 import it.isilviu.duelsroom.utils.worldguard.module.WorldGuardModule;
-import org.bstats.MetricsBase;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import revxrsal.commands.bukkit.BukkitCommandHandler;
+import revxrsal.commands.Lamp;
+import revxrsal.commands.bukkit.BukkitLamp;
+import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 
 import java.util.List;
 
@@ -34,7 +39,7 @@ public class DuelsRoom extends JavaPlugin {
         return INSTANCE;
     }
 
-    private DuelsRoomListener duelRoomsListener; // Really? DuelRoomsListener?
+    final DuelsMap duelsMap = new DuelsMap();
     private YamlFile config;
     private CustomFlag customFlags;
 
@@ -53,24 +58,30 @@ public class DuelsRoom extends JavaPlugin {
         this.config = new YamlFile(this, "config.yml");
 
         // METRICS
-        Metrics metrics = new Metrics(this, 23249);
         if (config.getBoolean("metrics", true)) { // Please, don't disable it. (every night I see the stars)
-            MetricsBase metricsBase = metrics.getMetricsBase();
-            if (!metricsBase.isEnabled()) metricsBase.startSubmitting();
+            new Metrics(this, 23249);
         }
 
         // Modules
-        new WorldGuardModule(this);
+        WorldGuardModule module = new WorldGuardModule(this);
 
         // Listeners
-        this.duelRoomsListener = new DuelsRoomListener(config, customFlags);
-        registerListeners(duelRoomsListener, new CombatListener(config), new PluginListener());
+        registerListeners(new DuelsRoomListener(config, customFlags, module, duelsMap), new CombatListener(config), new PluginListener(config));
 
         // Commands
-        BukkitCommandHandler handler = BukkitCommandHandler.create(this);
-        handler.register(new DuelsRoomCommand(config));
-        // (Optional) Register colorful tooltips (Works on 1.13+ only) // From the wiki.
-        handler.registerBrigadier();
+        Lamp<BukkitCommandActor> lamp = BukkitLamp.builder(this).build();
+        lamp.register(new DuelsRoomCommand(config));
+
+        // Hook
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PlaceholderAPI(config, module, duelsMap);
+            getLogger().info("Hooked into PlaceholderAPI!");
+        }
+
+        if (config.getBoolean("hooks.deluxecombat", true) && Bukkit.getPluginManager().isPluginEnabled("DeluxeCombat")) {
+            registerListeners(new DeluxeCombatListener(duelsMap, module));
+            getLogger().info("Hooked into DeluxeCombat!");
+        }
 
         getLogger().info("DuelsRoom has been enabled!");
     }
@@ -83,7 +94,7 @@ public class DuelsRoom extends JavaPlugin {
             if (regionManager == null) continue;
 
             for (ProtectedRegion region : regionManager.getRegions().values()) {
-                List<BlockVector3> blockVector3s = duelRoomsListener.inFight.get(region.getId());
+                List<BlockVector3> blockVector3s = duelsMap.get(region.getId());
                 if (blockVector3s == null) continue;
 
                 EnumFlag<Material> enumFlag = customFlags.getFlag(Flag.DUEL_ROOM_BLOCK);
@@ -91,8 +102,12 @@ public class DuelsRoom extends JavaPlugin {
                 Material material = region.getFlag(enumFlag);
                 if (material == null) material = Material.GLASS; // Default value.
 
-                EditSession editSession = WorldEditUtils.placeGlassBlocks(world, Material.AIR, material, blockVector3s);
-                editSession.flushQueue();
+                try {
+                    EditSession editSession = WorldEditUtils.placeGlassBlocks(world, Material.AIR, List.of(material), blockVector3s);
+                    editSession.flushSession();
+                } catch (MaxChangedBlocksException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

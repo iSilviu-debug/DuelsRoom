@@ -1,13 +1,28 @@
 # Configuration for the plugin
 
+# If you have a big regions with the duels, you can set the worldedit to true. (ONLY WITH FAWE)
+worldedit: false
+
 # Duration of the door.
 door:
+  # What block will be replaced for the border/door.
+  # Material is from the Spigot DOC.
+  replace:
+    - AIR
+    - LIGHT
   place: 0.5 # In seconds - The time it takes to place the door.
   break: 0 # In seconds - The time it takes to break the door.
+
+hooks:
+  # If you have the DeluxeCombat plugin, you can set this to true.
+  deluxecombat: true # True if you want to disable the combat instantly when a duel start.
 
 # Combat System.
 # The combat system is a system that allows players to duel each other without escaping.
 combat:
+  # When a player of the same clan/gang try to fight another member, he can't in some cases. With this, you bypass the damage between two clans (if possible).
+  bypass_pvp: false
+  # Combat timer system.
   enabled: true # If true, the combat system will be enabled.
   instant: false # If true, the combat will start instantly when a player enters the room.
   duration: 10 # In seconds - The time it takes to finish the combat.
@@ -21,6 +36,42 @@ combat:
       - "tell "
       - "w "
       - "whisper "
+
+# Run command on state.
+# The state is: END, START, INTRUSION (when another player joined the duel).
+commands:
+  # When the duel starts. That will execute a command for each player. You can use <player> for the player name.
+  start: []
+  end:
+    winner: # Execute command for the winner. Use <player> for the player name.
+      escaped: [] # If he win because he left the room.
+      killed: [] # If he win because he killed the other player.
+    loser: [] # Execute command for the loser. Use <player> for the player name.
+    all: [] # Execute command for all players (you can use placeholders like <winner> and <loser>.
+  intrusion: []
+
+sounds:
+  start:
+    sound: "ENTITY_WARDEN_SONIC_BOOM" # SEE Spigot DOC about SOUND
+    volume: 1
+    pitch: 1
+  end:
+    sound: "ENTITY_PLAYER_LEVELUP" # SEE Spigot DOC about SOUND
+    volume: 1
+    pitch: 1
+  intrusion:
+    sound: "ENTITY_VILLAGER_NO" # SEE Spigot DOC about SOUND
+    volume: 1
+    pitch: 1
+
+# Placeholders
+# A full placeholder is %duelsroom_<state>:<name>%.
+# <state> - Can be: STATUS, MEMBERS, MEMBERS_SIZE
+# <name> - The name of the duel.
+placeholders:
+  not_found: "Duel not active."
+  members_empty: "No players in the duel."
+  time_format: "HH:mm:ss" # The time format for the combat timer. You can set "smart" if you want to use AI. Or "HH:mm:ss", "Hh mm'm' ss's'", etc.
 
 # Messages for the plugin.
 messages:
@@ -38,5 +89,12 @@ messages:
       combat: "<gradient:blue:yellow>Combat ends in <gradient:yellow:gold><time><gradient:blue:yellow> seconds."
     start: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>You have entered combat mode."
     end: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>You have exited combat mode."
+  doors:
+    actionbar:
+      open_soon: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>The door will open in <gradient:yellow:gold><time><gradient:blue:yellow> seconds."
+      open: "<gradient:aqua:blue><bold>DuelsRoom</bold> <gradient:blue:yellow>The door is now open!"
+    chat:
+      open_soon: ""
+      open: ""
 
   format_players: "<gradient:yellow:gold><player><gradient:blue:yellow>"

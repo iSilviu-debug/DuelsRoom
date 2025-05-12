@@ -1,7 +1,8 @@
 name: DuelsRoom
-version: 1.0
+version: 1.2
 author: iSilviu
 website: silvio.top
 main: it.isilviu.duelsroom.DuelsRoom
-api-version: 1.19 # Only for Java 21
-depend: [WorldGuard, FastAsyncWorldEdit]
+api-version: 1.19 # Only for Java 17
+depend: [WorldGuard, WorldEdit]
+softdepend: [PlaceholderAPI, DeluxeCombat]

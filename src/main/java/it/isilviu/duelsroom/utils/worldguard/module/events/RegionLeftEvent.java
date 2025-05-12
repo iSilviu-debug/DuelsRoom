@@ -29,7 +29,7 @@ public class RegionLeftEvent extends Event implements Cancellable {
     private final String regionName;
     private final List<UUID> members;
     private final Location location;
-
+    private final Cause cause;
 
     /**
      * This even is fired whenever a region is left.
@@ -38,13 +38,14 @@ public class RegionLeftEvent extends Event implements Cancellable {
      * @param playerUUID The UUID of the player leaving the region.
      * @param region WorldGuard's ProtectedRegion region.
      */
-    public RegionLeftEvent(UUID playerUUID, @NotNull ProtectedRegion region, List<UUID> members, Location location)
+    public RegionLeftEvent(UUID playerUUID, @NotNull ProtectedRegion region, List<UUID> members, Location location, Cause cause)
     {
         this.uuid = playerUUID;
         this.region = region;
         this.regionName = region.getId();
         this.members = members;
         this.location = location;
+        this.cause = cause;
     }
 
     @Contract (pure = true)
@@ -85,6 +86,10 @@ public class RegionLeftEvent extends Event implements Cancellable {
         return location;
     }
 
+    public Cause getCause() {
+        return cause;
+    }
+
     @Override
     public boolean isCancelled() {
         return this.cancelled;
@@ -93,5 +98,11 @@ public class RegionLeftEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean cancelled) {
         this.cancelled=cancelled;
+    }
+
+    public enum Cause {
+        DEATH,
+        QUIT,
+        LEFT
     }
 }

@@ -4,40 +4,60 @@ plugins {
 }
 
 group = "it.isilviu"
-version = "1.0-SNAPSHOT"
+version = "1.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
+    maven {
+        name = "PaperMC"
+        url = uri("https://repo.papermc.io/repository/maven-public/")
+    }
     maven {
         name = "CodeMC"
         url = uri("https://repo.codemc.io/repository/maven-public/")
     }
-    maven(url = "https://jitpack.io")
+    maven {
+        name = "Jitpack"
+        url = uri("https://jitpack.io")
+    }
     maven {
         name = "silvioRepo"
         url = uri("https://repo.silvio.top/releases/")
     }
-    maven { url = uri("https://maven.enginehub.org/repo/") }
+    maven {
+        name = "EngineHub"
+        url = uri("https://maven.enginehub.org/repo/")
+    }
+    maven {
+        name = "ExtendedClip"
+        url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    }
 }
 
 dependencies {
-    implementation("org.bstats:bstats-base:3.0.6")
-    implementation("org.bstats:bstats-bukkit:3.0.6")
+    implementation("org.bstats:bstats-base:3.1.1")
+    implementation("org.bstats:bstats-bukkit:3.1.1")
 
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
     // Required for all platforms
-    implementation("com.github.Revxrsal.Lamp:common:3.2.1")
+    implementation("io.github.revxrsal:lamp.common:4.0.0-rc.12")
 
-    // Add your specific platform module here
-    implementation("com.github.Revxrsal.Lamp:bukkit:3.2.1")
+    // Required for Spigot and Paper
+    implementation("io.github.revxrsal:lamp.bukkit:4.0.0-rc.12")
+
+    // Brigadier module
+    implementation("io.github.revxrsal:lamp.brigadier:4.0.0-rc.12")
 
     // WorldGuard and Fawe. Require Java 21.
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.10")
-    implementation(platform("com.intellectualsites.bom:bom-newest:1.48")) // Ref: https://github.com/IntellectualSites/bom
-    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
-    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit") { isTransitive = false }
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.0")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.20")
+
+    // PlaceholderAPI
+    compileOnly("me.clip:placeholderapi:2.11.6")
+
+    // DeluxeCombat
+    compileOnly("com.github.timderspieler:DeluxeCombat-API:1.5.1")
 }
 
 tasks.withType<JavaCompile> { // Preserve parameter names in the bytecode
@@ -57,7 +77,7 @@ tasks {
 
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 tasks.test {

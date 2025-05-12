@@ -6,33 +6,40 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldedit.world.block.BlockTypes;
+import it.isilviu.duelsroom.DuelsRoom;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorldEditUtils {
 
 
-    public static List<BlockVector3> generateGlassPerimeter(List<BlockVector2> points, int minY, int maxY) {
+    public static List<BlockVector3> generateGlassPerimeter(List<BlockVector2> points, int minY, int maxY, int thickness) {
         List<BlockVector3> glassBlocks = new ArrayList<>();
         int numPoints = points.size();
+        int absThickness = Math.abs(thickness);
 
         for (int i = 0; i < numPoints; i++) {
             BlockVector2 currentPoint = points.get(i);
             BlockVector2 nextPoint = points.get((i + 1) % numPoints); // Wrap around to the first point
 
-            // Calculate the positions between currentPoint and nextPoint
             int x1 = currentPoint.getX();
             int z1 = currentPoint.getZ();
             int x2 = nextPoint.getX();
             int z2 = nextPoint.getZ();
 
-            // Use Bresenham's line algorithm to calculate the points between two coordinates
-            List<BlockVector3> linePoints = bresenhamLine(x1, z1, x2, z2, minY, maxY);
-            glassBlocks.addAll(linePoints);
+            for (int t = 0; t < absThickness; t++) {
+                int offset = thickness > 0 ? t : -t; // Positive for outward, negative for inward
+                // Use Bresenham's line algorithm to calculate the points between two coordinates
+                List<BlockVector3> linePoints = bresenhamLine(x1 + offset, z1 + offset, x2 + offset, z2 + offset, minY, maxY);
+                glassBlocks.addAll(linePoints);
+            }
         }
 
         // Add the roof
@@ -102,11 +109,23 @@ public class WorldEditUtils {
         return result;
     }
 
-    public static EditSession placeGlassBlocks(World world, Material material, Material filter, List<BlockVector3> glassBlocks) throws MaxChangedBlocksException {
+    public static EditSession placeGlassBlocks(World world, Material material, List<Material> filter, List<BlockVector3> glassBlocks) throws MaxChangedBlocksException {
+        boolean useWorldedit = DuelsRoom.instance().config().getBoolean("worldedit", false);
+
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world))) {
             for (BlockVector3 blockVector : glassBlocks) {
-                if (editSession.getBlock(blockVector).getBlockType() != BlockTypes.parse(filter.name())) continue;
-                editSession.setBlock(blockVector, BlockTypes.parse(material.name()).getDefaultState());
+                if (useWorldedit) {
+                    BlockType type = editSession.getBlock(blockVector).getBlockType();
+                    Material blockMaterial = BukkitAdapter.adapt(type);
+                    if (!filter.contains(blockMaterial)) continue;
+
+                    editSession.setBlock(blockVector, BlockTypes.get(material.getKey().asString()).getDefaultState());
+                    continue;
+                }
+
+                Block block = world.getBlockAt(blockVector.getBlockX(), blockVector.getBlockY(), blockVector.getBlockZ());
+                if (!filter.contains(block.getType())) continue;
+                block.setType(material);
             }
 
             return editSession;

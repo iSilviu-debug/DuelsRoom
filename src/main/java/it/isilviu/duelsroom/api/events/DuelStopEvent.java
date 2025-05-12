@@ -60,7 +60,8 @@ public class DuelStopEvent extends Event {
     }
 
     public enum Type {
-        END,
+        END_LEFT,
+        END_DIED,
         INTRUSION
     }
 }

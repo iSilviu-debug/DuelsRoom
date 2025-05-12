@@ -4,7 +4,7 @@ import it.isilviu.duelsroom.utils.config.Messages;
 import it.isilviu.duelsroom.utils.config.model.YamlFile;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Subcommand;
-import revxrsal.commands.bukkit.BukkitCommandActor;
+import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command("duelsroom")
@@ -18,7 +18,7 @@ public class DuelsRoomCommand {
 
     @Subcommand("info")
     public void onInfo(BukkitCommandActor actor) {
-        actor.audience().sendMessage(Messages.getMessage("""
+        actor.reply(Messages.getMessage("""
                 <gradient:blue:yellow>Plugin <gradient:red:blue>DuelsRoom <gradient:yellow:green>v<gradient:green:blue>1.0
                 <gray>Plugin developed by <aqua>silvio.top"""));
     }
@@ -26,7 +26,7 @@ public class DuelsRoomCommand {
     @Subcommand("reload")
     @CommandPermission("duelsroom.admin")
     public void onReload(BukkitCommandActor actor) {
-        actor.audience().sendMessage(Messages.getMessage("messages.reload"));
+        actor.reply(Messages.getMessage("messages.reload"));
         config.reload();
     }
 

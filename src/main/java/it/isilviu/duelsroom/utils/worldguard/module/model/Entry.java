@@ -77,7 +77,7 @@ public class Entry extends Handler implements Listener {
         for(ProtectedRegion r : left) {
             List<UUID> members = regionPlayers.computeIfAbsent(r.getId(), k -> Lists.newArrayList());
 
-            RegionLeftEvent regleft = new RegionLeftEvent(player.getUniqueId(), r, members, BukkitAdapter.adapt(player.getLocation()));
+            RegionLeftEvent regleft = new RegionLeftEvent(player.getUniqueId(), r, members, BukkitAdapter.adapt(player.getLocation()), RegionLeftEvent.Cause.LEFT);
             pm.callEvent(regleft);
             if(regleft.isCancelled()) return false;
 

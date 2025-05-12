@@ -152,7 +152,7 @@ public class CombatListener implements Listener {
     }
 
     boolean isInCombat(Player player) {
-        return inTimeCombat.get(player.getUniqueId()) instanceof Long time && System.currentTimeMillis() - time <= (config.getLong("combat.duration", 10) * 1000);
+        return inTimeCombat.containsKey(player.getUniqueId()) && System.currentTimeMillis() - inTimeCombat.get(player.getUniqueId()) <= (config.getLong("combat.duration", 10) * 1000);
     }
 
     final DecimalFormat format = new DecimalFormat("0.0");

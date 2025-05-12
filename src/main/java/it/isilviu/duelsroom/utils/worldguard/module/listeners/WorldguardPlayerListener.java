@@ -66,7 +66,7 @@ public class WorldguardPlayerListener implements Listener {
         for (ProtectedRegion protectedRegion : protectedRegions) {
             List<UUID> members = Entry.factory.regionPlayers.computeIfAbsent(protectedRegion.getId(), k -> Lists.newArrayList());
 
-            RegionLeftEvent regionLeftEvent = new RegionLeftEvent(player.getUniqueId(), protectedRegion, members, player.getLocation());
+            RegionLeftEvent regionLeftEvent = new RegionLeftEvent(player.getUniqueId(), protectedRegion, members, player.getLocation(), RegionLeftEvent.Cause.QUIT);
             pm.callEvent(regionLeftEvent);
 
             members.remove(player.getUniqueId());
@@ -87,7 +87,7 @@ public class WorldguardPlayerListener implements Listener {
         for (ProtectedRegion protectedRegion : protectedRegions) {
             List<UUID> members = Entry.factory.regionPlayers.computeIfAbsent(protectedRegion.getId(), k -> Lists.newArrayList());
 
-            RegionLeftEvent regionLeftEvent = new RegionLeftEvent(player.getUniqueId(), protectedRegion, members, player.getLocation());
+            RegionLeftEvent regionLeftEvent = new RegionLeftEvent(player.getUniqueId(), protectedRegion, members, player.getLocation(), RegionLeftEvent.Cause.DEATH);
             pm.callEvent(regionLeftEvent);
 
             members.remove(player.getUniqueId());
