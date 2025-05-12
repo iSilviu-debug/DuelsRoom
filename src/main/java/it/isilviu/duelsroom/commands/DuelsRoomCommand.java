@@ -19,7 +19,7 @@ public class DuelsRoomCommand {
     @Subcommand("info")
     public void onInfo(BukkitCommandActor actor) {
         actor.reply(Messages.getMessage("""
-                <gradient:blue:yellow>Plugin <gradient:red:blue>DuelsRoom <gradient:yellow:green>v<gradient:green:blue>1.0
+                <gradient:blue:yellow>Plugin <gradient:red:blue>DuelsRoom <gradient:yellow:green>v<gradient:green:blue>1.2
                 <gray>Plugin developed by <aqua>silvio.top"""));
     }
 
